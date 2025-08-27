@@ -13,6 +13,7 @@ import { CalendarIcon, UserIcon, ClockIcon } from "lucide-react"
 import Navbar from "@/components/Navbar"
 import PaginationControl from "@/components/PaginationControl"
 import { useEffect, useState } from "react"
+import Banner from "@/components/Banner"
 
 interface Post {
   _id: string
@@ -111,27 +112,10 @@ export default function HomePage({ searchParams }: { searchParams: { page?: stri
 
   return (
     <div className="min-h-screen bg-background">
-      <motion.header
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border"
-      >
-        <div className=" px-4 py-6">
-          <motion.h1
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-center text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text"
-          >
-            Mix Blog
-          </motion.h1>
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-            <Navbar />
-          </motion.div>
-        </div>
-      </motion.header>
+      <Navbar/>
+      <Banner/>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8" id="posts-section">
         <div className="flex flex-col lg:flex-row gap-8">
           <main className="w-full lg:w-2/3">
             {/* Featured Post */}
@@ -305,7 +289,7 @@ export default function HomePage({ searchParams }: { searchParams: { page?: stri
             className="w-full lg:w-1/3"
           >
             <div className="sticky top-24 space-y-6">
-              <Card className="bg-gradient-to-br from-card to-card/50 border-border/50">
+              <Card className="bg-gradient-to-br from-card to-card/50 border-border/50 py-6">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold flex items-center space-x-2">
                     <div className="w-2 h-6 bg-primary rounded-full"></div>
@@ -339,7 +323,7 @@ export default function HomePage({ searchParams }: { searchParams: { page?: stri
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-card to-card/50 border-border/50">
+              <Card className="bg-gradient-to-br from-card to-card/50 border-border/50 py-6 gap-0">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold flex items-center space-x-2">
                     <div className="w-2 h-6 bg-secondary rounded-full"></div>

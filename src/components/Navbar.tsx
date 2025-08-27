@@ -39,9 +39,9 @@ export default function Navbar() {
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link href="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-blog-primary to-blog-accent rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">B</span>
+                <span className=" font-bold text-lg">B</span>
               </div>
-              <span className="text-xl font-bold text-gray-900 dark:text-white">Blogs</span>
+              <span className="text-xl font-bold text-gray-900 dark:text-white">MixBlogs</span>
             </Link>
           </motion.div>
 
