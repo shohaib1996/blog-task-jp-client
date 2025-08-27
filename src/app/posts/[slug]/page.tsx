@@ -4,6 +4,8 @@ import api from '@/lib/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { FaTwitter, FaLinkedin, FaGithub } from 'react-icons/fa';
 
 interface Post {
@@ -39,7 +41,7 @@ async function getPosts(): Promise<Post[]> {
 }
 
 export default async function SinglePostPage({ params }: { params: { slug: string } }) {
-  const post = await getPost(params.slug);
+  const post = await getPost(params?.slug);
   const latestPosts = await getPosts();
 
   if (!post) {
@@ -80,10 +82,9 @@ export default async function SinglePostPage({ params }: { params: { slug: strin
               />
             </div>
 
-            <div
-              className="prose prose-lg dark:prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+            <div className="prose prose-lg dark:prose-invert max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+            </div>
           </article>
         </main>
 
