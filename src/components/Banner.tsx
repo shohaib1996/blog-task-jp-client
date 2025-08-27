@@ -54,7 +54,7 @@ export default function Banner() {
   }
 
   return (
-    <section className="relative min-h-[75vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blog-warm/5 via-background to-blog-primary/5">
+    <section className="relative min-h-[40vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blog-warm/5 via-background to-blog-primary/5">
       {/* Top Left Corner Icons */}
       {Array.from({ length: 3 }).map((_, i) => (
         <motion.div
@@ -295,7 +295,7 @@ export default function Banner() {
         </motion.div>
 
         {/* Scroll Indicator */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.8 }}
@@ -314,7 +314,7 @@ export default function Banner() {
             <span className="text-sm font-medium">Discover Stories</span>
             <FaArrowDown className="w-4 h-4" />
           </motion.div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   )
