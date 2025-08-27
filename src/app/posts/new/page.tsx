@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import MDEditor from '@uiw/react-md-editor';
 import { useTheme } from 'next-themes';
