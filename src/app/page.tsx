@@ -1,103 +1,210 @@
+import Link from "next/link";
 import Image from "next/image";
+import api from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { FaTwitter, FaLinkedin, FaGithub } from "react-icons/fa";
+import Navbar from "@/components/Navbar";
 
-export default function Home() {
+interface Post {
+  _id: string;
+  slug: string;
+  title: string;
+  content: string;
+  thumbnail: string;
+  createdAt: string;
+  author: string;
+  authorAvatar: string;
+  type: string;
+}
+
+async function getPosts(): Promise<Post[]> {
+  try {
+    const response = await api.get("/posts");
+    return response?.data?.posts;
+  } catch (error) {
+    console.error("Failed to fetch posts:", error);
+    return [];
+  }
+}
+
+// Helper to truncate content
+const truncate = (str: string, num: number) => {
+  if (str.length <= num) {
+    return str;
+  }
+  return str.slice(0, num) + "...";
+};
+
+export default async function HomePage() {
+  const posts = await getPosts();
+
+  if (posts.length === 0) {
+    return <p>No posts found. Make sure your backend is running.</p>;
+  }
+
+  const featuredPost = posts[0];
+  const otherPosts = posts.slice(1);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="container mx-auto p-4">
+      <h1 className="text-center text-4xl font-bold mb-8">Mix Blog</h1>
+      <Navbar />
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Main Content (2/3 width) */}
+        <main className="w-full md:w-2/3">
+          {/* Featured Post */}
+          <Card className="mb-8 text-center overflow-hidden">
+            <CardHeader className="p-0">
+              <div className="relative h-96 w-full">
+                <Image
+                  src={featuredPost.thumbnail}
+                  alt={featuredPost.title}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
+            </CardHeader>
+            <CardContent className="p-6">
+              <Badge variant="outline" className="mb-2">
+                {featuredPost.type}
+              </Badge>
+              <CardTitle className="text-3xl md:text-4xl font-bold mb-4">
+                {featuredPost.title}
+              </CardTitle>
+              <div className="flex justify-center items-center space-x-2 text-sm text-gray-500 mb-4">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src={featuredPost.authorAvatar}
+                    alt={featuredPost.author}
+                  />
+                  <AvatarFallback>
+                    {featuredPost.author.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <span>By {featuredPost.author}</span>
+                <span>•</span>
+                <span>
+                  {new Date(featuredPost.createdAt).toLocaleDateString(
+                    "en-US",
+                    { year: "numeric", month: "long", day: "numeric" }
+                  )}
+                </span>
+              </div>
+              <p className="text-gray-600">
+                {truncate(featuredPost.content, 150)}
+              </p>
+            </CardContent>
+            <CardFooter className="justify-center p-6 pt-0">
+              <Button asChild size="lg">
+                <Link href={`/posts/${featuredPost._id}`}>Read More</Link>
+              </Button>
+            </CardFooter>
+          </Card>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <hr className="my-8" />
+
+          {/* Remaining Posts */}
+          <div className="space-y-8">
+            {otherPosts.map((post) => (
+              <Card
+                key={post._id}
+                className="flex flex-col md:flex-row overflow-hidden"
+              >
+                <div className="relative h-48 md:h-auto md:w-1/3">
+                  <Image
+                    src={post.thumbnail}
+                    alt={post.title}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </div>
+                <div className="md:w-2/3 flex flex-col">
+                  <CardHeader>
+                    <Badge variant="outline">{post.type}</Badge>
+                    <CardTitle className="text-2xl mt-2">
+                      {post.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <div className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={post.authorAvatar}
+                          alt={post.author}
+                        />
+                        <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <span>By {post.author}</span>
+                      <span>•</span>
+                      <span>
+                        {new Date(post.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </div>
+                    <p className="text-gray-600">
+                      {truncate(post.content, 100)}
+                    </p>
+                  </CardContent>
+                  <CardFooter>
+                    <Button asChild>
+                      <Link href={`/posts/${post._id}`}>Read More</Link>
+                    </Button>
+                  </CardFooter>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </main>
+
+        {/* Sidebar (1/3 width) */}
+        <aside className="w-full md:w-1/3">
+          <Card className="sticky top-8">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold">Latest Posts</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {posts?.slice(0, 5).map((post) => (
+                  <li
+                    key={post._id}
+                    className="hover:text-blue-500 border-b pb-2"
+                  >
+                    <Link href={`/posts/${post._id}`}>{post.title}</Link>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardHeader>
+              <CardTitle className="text-xl font-bold">Follow Me</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex space-x-4">
+                <Link href="#" className="text-gray-500 hover:text-blue-500">
+                  <FaTwitter size={24} />
+                </Link>
+                <Link href="#" className="text-gray-500 hover:text-blue-500">
+                  <FaLinkedin size={24} />
+                </Link>
+                <Link href="#" className="text-gray-500 hover:text-blue-500">
+                  <FaGithub size={24} />
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </aside>
+      </div>
     </div>
   );
 }
